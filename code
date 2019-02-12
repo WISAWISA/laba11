@@ -1,0 +1,74 @@
+#include <stdio.h> 
+#include <string.h> 
+#include <windows.h> 
+#define KONSTANTA 1 
+#define NE_KONSTANTA 0 
+#define MAXLEN 1000 
+void main( void ) 
+{ 
+HANDLE hStdout; 
+FILE *fp; 
+char line[MAXLEN]; 
+char word[MAXLEN]; 
+int i; 
+int flag; 
+int prev_flag; 
+char *ptr; 
+char save; 
+WORD foregroundColor0; 
+WORD foregroundColor1; 
+WORD backgroundColor; 
+WORD foregroundColor; 
+WORD textAttribute; 
+hStdout= GetStdHandle (STD_OUTPUT_HANDLE); 
+foregroundColor0 = FOREGROUND_INTENSITY | FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED;
+foregroundColor1 = FOREGROUND_INTENSITY | FOREGROUND_RED; 
+SetConsoleTextAttribute (hStdout, 7 ); 
+fp = fopen( "test.txt", "rt" ); 
+if( fp == NULL ) 
+return; 
+while( !feof( fp ) ) 
+{ 
+ptr = fgets( line, MAXLEN, fp ); 
+if( ptr == NULL ) 
+-2- 
+break; 
+i = 0; 
+prev_flag = flag = NE_KONSTANTA; 
+word[0] = '\0'; 
+while( *ptr != 0 ) 
+{ 
+if(*ptr == ' ') 
+save = *(ptr + 1); 
+prev_flag = flag; 
+if( 
+(*ptr == '0' || *ptr == '1' || *ptr == '2' || *ptr == '3' || *ptr == '4' || *ptr == '5' || *ptr == '6' || *ptr == '7' || *ptr == '8' || *ptr == '9' || 
+*ptr == 'A' || *ptr == 'B' || *ptr == 'C' || *ptr == 'D' || *ptr == 'E' || *ptr == 'F' || *ptr == 'x') && 
+(save == '0' || save == '1' || save == '2' || save == '3' || save == '4' || save == '5' || save == '6' || save == '7' || save == '8' || save == '9') 
+) 
+flag = KONSTANTA; 
+else 
+flag = NE_KONSTANTA; 
+if( flag != prev_flag ) 
+{ 
+word[i] = '\0'; 
+foregroundColor = (prev_flag == NE_KONSTANTA) ? foregroundColor0 : foregroundColor1; 
+textAttribute = foregroundColor; 
+SetConsoleTextAttribute (hStdout, textAttribute ); 
+printf( "%s", word ); 
+i = 0; 
+} 
+word[i++] = *ptr++; 
+} 
+if( i != 0 ) 
+{ 
+word[i] = '\0'; 
+foregroundColor = (prev_flag == NE_KONSTANTA) ? foregroundColor0 : foregroundColor1; 
+textAttribute = foregroundColor; 
+SetConsoleTextAttribute (hStdout, textAttribute ); 
+printf( "%s", word ); 
+} 
+} 
+printf("\n"); 
+SetConsoleTextAttribute (hStdout, 7 ); 
+}
